@@ -4,6 +4,14 @@ Simple Alexa skill to collect and speak balances from Mint (http://mint.com)
 
 Dustin Runnells (dustin@runnells.name) - 3/9/17 
 
+### Status
+It seems to be working for me. I can get a balance on my checking accounts, credit cards and mortgage through different banks by speaking things like:
+* Alexa, ask Mint for my bank balance.
+* Alexa, ask Mint for my balances.
+* Alexa, ask Mint for my credit card balance.
+
+Someday I'd like to add budgets to this script as well.
+
 ### Notes
 * This skill is intended to be used for personal/private use. It cannot be installed from the Alexa Skills Market. Installation of this skill requires you to follow the steps that a Skill developer would need to take to create a skill for development purposes. After completing these steps you will be able to ask Alexa for bank balance information obtained from your Mint account.
 * This skill is based on the [Alexa PHP Helo World example by Mell L Rosandich](http://www.ourace.com/145-amazon-echo-alexa-with-php-hello-world)
