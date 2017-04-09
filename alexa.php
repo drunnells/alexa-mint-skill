@@ -1,4 +1,19 @@
 <?php
+
+/* 
+ * alexa-mint-skill v0.1
+ *
+ * Simple Alexa skill to collect and speak balances from Mint (http://mint.com)
+ * Dustin Runnells - 3/9/17
+ *
+ * Based on the Alexa PHP example by Mell L Rosandich:
+ *   http://www.ourace.com/145-amazon-echo-alexa-with-php-hello-world
+ *
+ * Depends on the MintAPI CLI tool by Mike Rooney:
+ *   https://github.com/mrooney/mintapi
+ *
+ */
+
 require_once('config.php');
 require_once('mintLib.php');
 
@@ -6,20 +21,18 @@ $input = file_get_contents('php://input');
 $echoArray = json_decode($input);
 $RequestType = $echoArray->request->type;
 
-logMessage($input);
-
-$JsonOut 	= GetJsonMessageResponse($configArray,$RequestType,$echoArray);
+$JsonOut 	= getJsonMessageResponse($configArray,$RequestType,$echoArray);
 $size 		= strlen($JsonOut);
 header('Content-Type: application/json');
 header("Content-length: $size");
 echo $JsonOut;
 
-function logMessage($message) {
-        file_put_contents('conversation.log', date("D M j G:i:s T Y") . " [" . getmypid() . "] - " . $message . "\n", FILE_APPEND);
-}
+exit;
 
-function GetJsonMessageResponse($configArray,$requestMessageType,$echoArray){
-
+//
+// Build JSON response message
+//
+function getJsonMessageResponse($configArray,$requestMessageType,$echoArray){
 	$returnArray = array();
 	$requestId = $echoArray->request->requestId;
 
@@ -60,7 +73,6 @@ function GetJsonMessageResponse($configArray,$requestMessageType,$echoArray){
 			$action = '';
 			$actionFilter = '';
 			if (property_exists($echoArray->request->intent->slots->actionType,'value')) {
-				logMessage("ACTION REQUEST: " . $echoArray->request->intent->slots->actionType->value);
 				switch ($echoArray->request->intent->slots->actionType->value) {
 					case 'balance':
 					case 'balances':
@@ -73,23 +85,26 @@ function GetJsonMessageResponse($configArray,$requestMessageType,$echoArray){
 				}
 			}
 			if (property_exists($echoArray->request->intent->slots->budgetType,'value')) {
-				logMessage("BUDGET REQUEST: " . $echoArray->request->intent->slots->budgetType->value);
 				$action = 'budget';
 				$actionFilter = $echoArray->request->intent->slots->budgetType->value;
 			}
 			if (property_exists($echoArray->request->intent->slots->bankType,'value')) {
-				logMessage("BALANCE REQUEST: " . $echoArray->request->intent->slots->bankType->value);
 				$action = 'balance';
 				$actionFilter = $echoArray->request->intent->slots->bankType->value;
 			}
 
-			//// MINT STUFF ////
+			//
+			// Check if this is a request for budget or balance information
+			//
 			$balString = false;
 			switch ($action) {
 				case 'budget':
 					$balString = 'Budgets are not yet available for this skill.';
 					break;
 				case 'balance':
+					//
+					// Collect Mint balance information
+					//
 					$mintDetail = getMintDetail($configArray);
 					if ($mintDetail) {
 					        $balString = getBalString($mintDetail,$actionFilter);
@@ -100,8 +115,10 @@ function GetJsonMessageResponse($configArray,$requestMessageType,$echoArray){
 				$balString = 'Mint was unable to process your request.';
 			}
 			$SpeakPhrase = $balString;
-			//// MINT STUFF ////
-	
+
+			//
+			// Build return array
+			//
 			$returnArray = array(
 				'version' => '1.0',
 				'sessionAttributes' => array(

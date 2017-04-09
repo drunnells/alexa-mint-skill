@@ -1,19 +1,33 @@
 <?php
 
+/*
+ * Some functions to use MintAPI by Mike Rooney:
+ *   https://github.com/mrooney/mintapi
+ *
+ */
+
+
+//
+// Fetch Mint account balances and return array of account objects
+//
 function getMintDetail($configArray) {
 	$toReturn = false;
 	$cmd = $configArray['mintApi'] . ' --session ' . $configArray['ius_session'] . ' --thx_guid ' . $configArray['thx_guid'] . ' ' . $configArray['username'] . ' ' . $configArray['password'] . ' 2> /dev/null';
 
 	$result = `$cmd`;
-	$resultObj = json_decode($result);
+	$resultObjArray = json_decode($result);
 
-	if (is_array($resultObj) && (sizeof($resultObj) > 0)) {
-		$toReturn = $resultObj;
+	if (is_array($resultObjArray) && (sizeof($resultObjArray) > 0)) {
+		$toReturn = $resultObjArray;
 	}
 
 	return $toReturn;
 }
 
+//
+// Fetch Mint budgets
+// NOTE: Budgets are not currently working, some data from mintapi seems to be missing?
+//
 function getMintBudgetDetail($configArray) {
 	$toReturn = false;
 	$cmd = $configArray['mintApi'] . ' --budgets --session ' . $configArray['ius_session'] . ' --thx_guid ' . $configArray['thx_guid'] . ' ' . $configArray['username'] . ' ' . $configArray['password'] . ' 2> /dev/null';
@@ -29,8 +43,11 @@ function getMintBudgetDetail($configArray) {
 	return $toReturn;
 }
 
-function getBalString($mintDetailObj,$type=false) {
-	if (!$mintDetailObj) {
+//
+//  Generate text for Alexa to speak based on balances
+//
+function getBalString($mintDetailObjArray,$type=false) {
+	if (!$mintDetailObjArray) {
 		return false;
 	}
 	$toReturn = '';
@@ -44,7 +61,7 @@ function getBalString($mintDetailObj,$type=false) {
 		}
 		$filterArray = array($type);
 	}
-	foreach($mintDetailObj as $accountObj) {
+	foreach($mintDetailObjArray as $accountObj) {
 		if (in_array($accountObj->accountType,$filterArray)) {
 			if ($accountObj->isActive && !$accountObj->isClosed) {
 				$toReturn .= "Balance for " . $accountObj->fiLoginDisplayName . " "
