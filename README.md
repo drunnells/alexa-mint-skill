@@ -14,6 +14,7 @@ Someday I'd like to add budgets to this script as well.
 
 ### Notes
 * This skill is intended to be used for personal/private use. It cannot be installed from the Alexa Skills Market. Installation of this skill requires you to follow the steps that a Skill developer would need to take to create a skill for development purposes. After completing these steps you will be able to ask Alexa for bank balance information obtained from your Mint account.
+* Since this will be a development skill on your Amazon account, it will only work if your Amazon Echo device is associated with the same account that you are adding this skill to. It should appear in the Alexa app on your phone under Skills->Your Skills without any special steps needed to enable.
 * This skill is based on the [Alexa PHP Helo World example by Mell L Rosandich](http://www.ourace.com/145-amazon-echo-alexa-with-php-hello-world)
 
 ## Dependancies
@@ -25,7 +26,12 @@ Someday I'd like to add budgets to this script as well.
 1. Install MintAPI and verify that it works on the command line.
 2. Obtain an SSL certificate (https://letsencrypt.org/ is free). This is required for all Alexa skills.
 3. Configure your web server to host an https website and copy/host all project files at that URL (eg. https://example.com/alexa-mint-skill)
-4. Edit the *config.php* file to include your Mint email address, password and the ius_session and thx_guid required for MintAPI. See [MintAPI](https://github.com/mrooney/mintapi) for more info.
+4. Edit the *config.php* file to include:
+    * Your Mint email address
+    * Your Mint password
+    * The ius_session for MintAPI (See [MintAPI](https://github.com/mrooney/mintapi) for more info)
+    * The thx_guid required for MintAPI. (See [MintAPI](https://github.com/mrooney/mintapi) for more info)
+    * The correct path to mintapi
 5. Login to the Alexa section of the Amazon development portal: https://developer.amazon.com/edw/home.html#/
 6. Click "**Get Started**" in the *Alexa Skills Kit* box.
 7. Click the "**Add New Skill**" button on the top Right.
@@ -101,6 +107,14 @@ Mint for the {budgetType} budget
 23. Click **Next** to move to the *Test* tab. 
 24. Type "*Mint get my bank balance*" in the simulator and confirm that no obvious errors appear in the returned JSON.
 25. Try on your Amazon Echo. If all went well, you should now be able to ask Alexa to retrieve your bank balances.
+
+### Troubleshooting
+
+Make sure that the MintAPI CLI tool is working with your account. This skill will execute the command as follows based on the configuration that you provided in config.php:
+
+```
+mintapi --session <ius_session> --thx_guid <thx_guid> <mint email address> <mint password>
+```
 
 ### Development
 
