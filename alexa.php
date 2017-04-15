@@ -1,10 +1,10 @@
 <?php
 
 /* 
- * alexa-mint-skill v0.1
+ * alexa-mint-skill
  *
  * Simple Alexa skill to collect and speak balances from Mint (http://mint.com)
- * Dustin Runnells - 3/9/17
+ * Dustin Runnells
  *
  * Based on the Alexa PHP example by Mell L Rosandich:
  *   http://www.ourace.com/145-amazon-echo-alexa-with-php-hello-world
@@ -13,6 +13,8 @@
  *   https://github.com/mrooney/mintapi
  *
  */
+
+define("VERSION","0.2");
 
 require_once('config.php');
 require_once('mintLib.php');
@@ -39,15 +41,7 @@ function getJsonMessageResponse($configArray,$requestMessageType,$echoArray){
 	switch($requestMessageType) {
 		case "LaunchRequest":
 			$returnArray = array(
-				'version' => '1.0',
-				'sessionAttributes' => array(
-					'countActionList' => array(
-						'read' => 'true',
-						'category' => 'true',
-						'currentTaxt' => 'none',
-						'currentStep' => '0',
-					),
-				),
+				'version' => VERSION,
 				'response' => array(
 					'outputSpeech' => array(
 						'type' => 'PlainText',
@@ -96,10 +90,19 @@ function getJsonMessageResponse($configArray,$requestMessageType,$echoArray){
 			//
 			// Check if this is a request for budget or balance information
 			//
-			$balString = false;
+			$SpeakPhrase = 'Mint was unable to process your request.';
 			switch ($action) {
 				case 'budget':
-					$balString = 'Budgets are not yet available for this skill.';
+					$SpeakPhrase = 'Budgets are not yet available for this skill.';
+					// NOTE: Budgets are disabled in this skill. I seem to be having a problem
+					//       with some budgets being named "Unknown". I have reported the issue here:
+					//       https://github.com/mrooney/mintapi/issues/96
+					/*
+					$mintDetail = getMintBudgetDetail($configArray);
+					if ($mintDetail) {
+						$SpeakPhrase = getBudgetString($mintDetail);
+					}
+					*/
 					break;
 				case 'balance':
 					//
@@ -107,27 +110,16 @@ function getJsonMessageResponse($configArray,$requestMessageType,$echoArray){
 					//
 					$mintDetail = getMintDetail($configArray);
 					if ($mintDetail) {
-					        $balString = getBalString($mintDetail,$actionFilter);
+					        $SpeakPhrase = getBalString($mintDetail,$actionFilter);
 					}
 					break;
 			}
-			if (!$balString) {
-				$balString = 'Mint was unable to process your request.';
-			}
-			$SpeakPhrase = $balString;
 
 			//
 			// Build return array
 			//
 			$returnArray = array(
-				'version' => '1.0',
-				'sessionAttributes' => array(
-					'countActionList' => array(
-						'read' => 'true',
-						'category' => 'true',
-						'curentTask' => 'none',
-					),
-				),
+				'version' => VERSION,
 				'response' => array(
 					'outputSpeech' => array(
 						'type' => 'PlainText',

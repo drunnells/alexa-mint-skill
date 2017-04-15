@@ -26,7 +26,6 @@ function getMintDetail($configArray) {
 
 //
 // Fetch Mint budgets
-// NOTE: Budgets are not currently working, some data from mintapi seems to be missing?
 //
 function getMintBudgetDetail($configArray) {
 	$toReturn = false;
@@ -66,8 +65,24 @@ function getBalString($mintDetailObjArray,$type=false) {
 			if ($accountObj->isActive && !$accountObj->isClosed) {
 				$toReturn .= "Balance for " . $accountObj->fiLoginDisplayName . " "
 						. $accountObj->yodleeName . " is "
-						. '$' . $accountObj->value . ".\n";
+						. '$' . round($accountObj->value,2) . ".\n";
 			}
+		}
+	}
+	return $toReturn;
+}
+
+//
+//  Generate text for Alexa to speak based on budgets
+//
+function getBudgetString($mintDetailObj) {
+	if (!$mintDetailObj) {
+		return false;
+	}
+	$toReturn = '';
+	if (property_exists($mintDetailObj,'spend') && is_array($mintDetailObj->spend)) {
+		foreach($mintDetailObj->spend as $budgetObj) {
+			$toReturn .= "Budget for " . $budgetObj->cat . " has $" . round(($budgetObj->bgt - $budgetObj->amt),2) . " of $" . round($budgetObj->bgt,2) . " remaining.\n";
 		}
 	}
 	return $toReturn;
