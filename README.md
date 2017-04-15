@@ -1,8 +1,10 @@
-# alexa-mint-skill v0.1
+# alexa-mint-skill v0.2
 
-Simple Alexa skill to collect and speak balances from Mint (http://mint.com)
+Unofficial simple Alexa skill to collect and speak balances from Mint (http://mint.com)
 
-Dustin Runnells (dustin@runnells.name) - 3/9/17 
+Dustin Runnells (dustin@runnells.name)
+
+*THIS SKILL IS FOR PERSONAL USE ONLY AND IS NOT ENDORSED BY MINT OR AMAZON - DO NOT SUBMIT THIS TO AMAZON FOR CERTIFICATION*
 
 ### Status
 It seems to be working for me. I can get a balance on my checking accounts, credit cards and mortgage through different banks by speaking things like:
