@@ -1,4 +1,4 @@
-# alexa-mint-skill v0.2
+# alexa-mint-skill v0.3
 
 Unofficial simple Alexa skill to collect and speak balances from Mint (http://mint.com)
 
