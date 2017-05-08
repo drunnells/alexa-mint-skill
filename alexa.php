@@ -14,7 +14,7 @@
  *
  */
 
-define("VERSION","0.2");
+define("VERSION","0.3");
 
 require_once('config.php');
 require_once('mintLib.php');
@@ -93,16 +93,12 @@ function getJsonMessageResponse($configArray,$requestMessageType,$echoArray){
 			$SpeakPhrase = 'Mint was unable to process your request.';
 			switch ($action) {
 				case 'budget':
-					$SpeakPhrase = 'Budgets are not yet available for this skill.';
-					// NOTE: Budgets are disabled in this skill. I seem to be having a problem
-					//       with some budgets being named "Unknown". I have reported the issue here:
+					// NOTE: If you run into some budgets being named "Unknown". See:
 					//       https://github.com/mrooney/mintapi/issues/96
-					/*
 					$mintDetail = getMintBudgetDetail($configArray);
 					if ($mintDetail) {
 						$SpeakPhrase = getBudgetString($mintDetail);
 					}
-					*/
 					break;
 				case 'balance':
 					//
